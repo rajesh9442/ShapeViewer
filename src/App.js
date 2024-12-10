@@ -10,14 +10,26 @@ const App = () => {
 
   // Function to handle file input and parse shape data
   const handleFileOpen = (file) => {
+    console.log("File selected in App:", file);  // Debugging: Check file object
+
+    // Check if the file has a valid extension (e.g., .txt or .shapefile)
+    const validExtensions = [".txt", ".shapefile"];
+    const fileExtension = file.name.split(".").pop().toLowerCase();
+
+    if (!validExtensions.includes(`.${fileExtension}`)) {
+      alert("Please select a text-based shape file.");
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const fileContent = e.target.result;
+      console.log("File content:", fileContent);  // Debugging: Verify content of file
       const shapes = parseShapeFile(fileContent); // Parse the content of the file
       setShapes(shapes);
       setFileName(file.name); // Set the file name when the file is selected
     };
-    reader.readAsText(file);
+    reader.readAsText(file); // Read the file as text
   };
 
   // Function to parse the shape file content
