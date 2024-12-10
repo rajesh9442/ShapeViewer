@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import LeftMenu from "./components/LeftMenu";
 import ShapeViewport from "./components/ShapeViewport";
 import TopToolbar from "./components/TopToolbar";
+import { parseShapeFile } from "./utils/parseShapeFile"; // Importing the parsing utility
 import "./App.css";
 
 const App = () => {
@@ -10,7 +11,7 @@ const App = () => {
 
   // Function to handle file input and parse shape data
   const handleFileOpen = (file) => {
-    console.log("File selected in App:", file);  // Debugging: Check file object
+    console.log("File selected in App:", file); // Debugging: Check file object
 
     // Check if the file has a valid extension (e.g., .txt or .shapefile)
     const validExtensions = [".txt", ".shapefile"];
@@ -24,55 +25,23 @@ const App = () => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const fileContent = e.target.result;
-      console.log("File content:", fileContent);  // Debugging: Verify content of file
-      const shapes = parseShapeFile(fileContent); // Parse the content of the file
-      setShapes(shapes);
+      console.log("File content:", fileContent); // Debugging: Verify content of file
+      
+      const parsedShapes = parseShapeFile(fileContent); // Parse the content of the file
+      setShapes(parsedShapes); // Update shapes state
       setFileName(file.name); // Set the file name when the file is selected
     };
     reader.readAsText(file); // Read the file as text
   };
 
-  // Function to parse the shape file content
-  const parseShapeFile = (content) => {
-    const shapes = [];
-    const lines = content.split(";");  // Split by semicolon to separate shapes
-    
-    lines.forEach((line) => {
-      if (line.trim().startsWith("//") || line.trim() === "") return;
-
-      const cleanLine = line.split("//")[0].trim(); // Clean comments
-      const parts = cleanLine.split(",");
-
-      if (parts.length < 7) return; // Ensure enough data exists for the shape
-
-      const type = parts[0].trim();
-      const x = parseInt(parts[1].trim(), 10);
-      const y = parseInt(parts[2].trim(), 10);
-      const zIndex = parseInt(parts[3].trim(), 10);
-      const width = parseInt(parts[4].trim(), 10);
-      const height = parseInt(parts[5].trim(), 10);
-      const color = `#${parts[6].trim()}`;
-
-      shapes.push({
-        type,
-        x,
-        y,
-        width,
-        height,
-        color,
-        zIndex,
-      });
-    });
-
-    return shapes;
-  };
-
   return (
     <div className="app">
-      {/* Pass fileName to TopToolbar component */}
+      {/* Top Toolbar with file name */}
       <TopToolbar fileName={fileName} />
       <div className="main-content">
+        {/* Left Menu to open files */}
         <LeftMenu onFileOpen={handleFileOpen} />
+        {/* Shape Viewport to render parsed shapes */}
         <ShapeViewport shapes={shapes} />
       </div>
     </div>

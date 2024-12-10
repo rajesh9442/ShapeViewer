@@ -1,14 +1,25 @@
 import React from "react";
 
 const TopToolbar = ({ fileName }) => {
+  const toolbarStyle = {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#333",
+    color: "#fff",
+    padding: "10px",
+    fontSize: "18px",
+  };
+
+  const fileNameStyle = {
+    fontStyle: "italic",
+    color: "#00ff00",
+  };
+
   return (
-    <div className="top-toolbar">
-      <h1>Shape Viewer</h1>
-      {fileName ? (
-        <span>{fileName}</span> // Display file name when a file is selected
-      ) : (
-        <button>Open Shape File</button> // Show button if no file is selected
-      )}
+    <div style={toolbarStyle}>
+      <span>Shape Viewer</span>
+      {fileName && <span style={fileNameStyle}>{fileName}</span>}
     </div>
   );
 };

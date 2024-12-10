@@ -1,27 +1,39 @@
 import React from "react";
 
 const LeftMenu = ({ onFileOpen }) => {
-  const handleFileInput = (e) => {
-    const file = e.target.files[0];
+  const menuStyle = {
+    padding: "20px",
+    backgroundColor: "#f0f0f0",
+    borderRight: "1px solid #ccc",
+    width: "200px",
+  };
+
+  const labelStyle = {
+    cursor: "pointer",
+    display: "block",
+    margin: "10px 0",
+    fontSize: "16px",
+    color: "#333",
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0]; // Get the selected file
     if (file) {
-      console.log("File selected in LeftMenu:", file); // Debugging: Ensure file is being passed
-      onFileOpen(file);
+      onFileOpen(file); // Trigger the onFileOpen callback with the file
     }
   };
 
   return (
-    <div className="left-menu">
-      <h3>Menu</h3>
-      <label htmlFor="file-input" style={{ cursor: "pointer", color: "blue" }}>
-        Open Shape File
+    <div style={menuStyle}>
+      <label style={labelStyle}>
+        Open shape file
+        <input
+          type="file"
+          accept=".txt,.shapefile"
+          onChange={handleFileChange}
+          style={{ display: "none" }}
+        />
       </label>
-      <input
-        id="file-input"
-        type="file"
-        accept=".shapefile,.txt" // Allow shapefile and txt extensions
-        style={{ display: "none" }}
-        onChange={handleFileInput}
-      />
     </div>
   );
 };
