@@ -1,0 +1,33 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+}
+
+.left-menu {
+  width: 200px;
+  background-color: #f4f4f4;
+  padding: 10px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.shape-viewport {
+  flex: 1;
+  background-color: #eaeaea;
+  position: relative;
+}
+
+.top-toolbar {
+  height: 50px;
+  background-color: #333;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
