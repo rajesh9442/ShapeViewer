@@ -8,8 +8,11 @@ export const drawShapes = (shapes, canvasRef) => {
   // Clear the entire canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  // Sort shapes by zIndex (ascending order)
+  const sortedShapes = [...shapes].sort((a, b) => a.zIndex - b.zIndex);
+
   // Draw the shapes
-  shapes.forEach(({ type, x, y, width, height, color, radius }) => { // Include `radius` for Circle
+  sortedShapes.forEach(({ type, x, y, width, height, color, radius }) => {
     ctx.fillStyle = color; // Set the fill color for the shape
 
     if (type === 'Rectangle') {
