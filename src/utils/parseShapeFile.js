@@ -1,6 +1,6 @@
 export const parseShapeFile = (fileContent) => {
   const shapes = [];
-  
+
   // Split the file content by new lines and filter out empty lines
   const lines = fileContent
     .split('\n')
@@ -12,26 +12,45 @@ export const parseShapeFile = (fileContent) => {
       // Remove inline comments and anything after the semicolon
       const cleanLine = line.split('//')[0].split(';')[0].trim();
 
-      // Extract shape properties
-      const [type, x, y, zIndex, width, height, color] = cleanLine
-        .split(',')
-        .map((item) => item.trim());
-      
-      // Validate required fields
-      if (!type || isNaN(x) || isNaN(y) || isNaN(zIndex) || isNaN(width) || isNaN(height) || !color) {
-        console.warn(`Invalid shape data: ${line}`);
-        return; // Skip invalid lines
-      }
+      // Split the line into parts
+      const parts = cleanLine.split(',').map((item) => item.trim());
 
-      shapes.push({
-        type,
-        x: +x,
-        y: +y,
-        zIndex: +zIndex,
-        width: +width,
-        height: +height,
-        color: color.startsWith('#') ? color : `#${color}`, // Ensure color starts with #
-      });
+      // Determine shape type and parse accordingly
+      const type = parts[0];
+      if (type === 'Circle') {
+        // Validate and extract Circle-specific fields
+        const [x, y, zIndex, radius, color] = parts.slice(1);
+        if (!type || isNaN(x) || isNaN(y) || isNaN(zIndex) || isNaN(radius) || !color) {
+          console.warn(`Invalid Circle data: ${line}`);
+          return; // Skip invalid Circle lines
+        }
+
+        shapes.push({
+          type,
+          x: +x,
+          y: +y,
+          zIndex: +zIndex,
+          radius: +radius,
+          color: color.startsWith('#') ? color : `#${color}`, // Ensure color starts with #
+        });
+      } else {
+        // Validate and extract general shape fields
+        const [x, y, zIndex, width, height, color] = parts.slice(1);
+        if (!type || isNaN(x) || isNaN(y) || isNaN(zIndex) || isNaN(width) || isNaN(height) || !color) {
+          console.warn(`Invalid shape data: ${line}`);
+          return; // Skip invalid lines
+        }
+
+        shapes.push({
+          type,
+          x: +x,
+          y: +y,
+          zIndex: +zIndex,
+          width: +width,
+          height: +height,
+          color: color.startsWith('#') ? color : `#${color}`, // Ensure color starts with #
+        });
+      }
     } catch (error) {
       console.error(`Error parsing line: "${line}"`, error);
     }

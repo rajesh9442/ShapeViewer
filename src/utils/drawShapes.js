@@ -9,7 +9,7 @@ export const drawShapes = (shapes, canvasRef) => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // Draw the shapes
-  shapes.forEach(({ type, x, y, width, height, color }) => {
+  shapes.forEach(({ type, x, y, width, height, color, radius }) => { // Include `radius` for Circle
     ctx.fillStyle = color; // Set the fill color for the shape
 
     if (type === 'Rectangle') {
@@ -21,6 +21,15 @@ export const drawShapes = (shapes, canvasRef) => {
       ctx.lineTo(x + width, y); // Bottom-right point
       ctx.closePath();
       ctx.fill(); // Fill the triangle
+    } else if (type === 'Circle') {
+      if (!radius) {
+        console.warn(`Invalid Circle: x=${x}, y=${y}, radius=${radius}`);
+        return; // Skip circles without a valid radius
+      }
+      ctx.beginPath(); // Start a new path
+      ctx.arc(x, y, radius, 0, 2 * Math.PI); // Draw a circle
+      ctx.closePath(); // Close the path
+      ctx.fill(); // Fill the circle
     }
   });
 };
