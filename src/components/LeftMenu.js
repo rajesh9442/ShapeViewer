@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 const LeftMenu = ({ onFileOpen }) => {
   const [uploadedFiles, setUploadedFiles] = useState([]); // Store the list of uploaded files
