@@ -37,7 +37,7 @@ const LeftMenu = ({ onFileOpen }) => {
 
     // Call onFileOpen for the first uploaded file automatically
     if (newFiles.length > 0) {
-      onFileOpen(newFiles[0].content);  // Automatically render the new file
+      onFileOpen(newFiles[0].content); // Automatically render the new file
       setActiveFileIndex(0); // Set the first file as active
     }
 
@@ -52,17 +52,31 @@ const LeftMenu = ({ onFileOpen }) => {
   return (
     <div style={menuStyle}>
       {/* Upload Button */}
-      <div style={menuItemStyle(false)}>
-        <label>
+      <div>
+        <input
+          id="file-input"
+          type="file"
+          multiple
+          accept=".txt,.shapefile"
+          onChange={handleFileChange}
+          style={{ display: "none" }} // Hide the input
+        />
+        <button
+          onClick={() => document.getElementById("file-input").click()} // Trigger input click
+          style={{
+            display: "inline-block",
+            padding: "10px 15px",
+            backgroundColor: "green", // Green background
+            color: "#fff", // White text
+            fontSize: "16px",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            textAlign: "center",
+          }}
+        >
           Open shape file
-          <input
-            type="file"
-            multiple // Allow multiple file uploads
-            accept=".txt,.shapefile"
-            onChange={handleFileChange}
-            style={{ display: "none" }}
-          />
-        </label>
+        </button>
       </div>
 
       {/* List of Uploaded Files */}
