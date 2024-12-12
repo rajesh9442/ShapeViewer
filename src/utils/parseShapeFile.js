@@ -33,6 +33,25 @@ export const parseShapeFile = (fileContent) => {
           radius: +radius,
           color: color.startsWith('#') ? color : `#${color}`, // Ensure color starts with #
         });
+      } else if (type === 'Polygon') {
+        // Validate and extract Polygon-specific fields
+        const [x, y, zIndex, width, height, rotation, vertexCount, color] = parts.slice(1);
+        if (!type || isNaN(x) || isNaN(y) || isNaN(zIndex) || isNaN(width) || isNaN(height) || isNaN(rotation) || isNaN(vertexCount) || !color) {
+          console.warn(`Invalid Polygon data: ${line}`);
+          return; // Skip invalid Polygon lines
+        }
+
+        shapes.push({
+          type,
+          x: +x,
+          y: +y,
+          zIndex: +zIndex,
+          width: +width,
+          height: +height,
+          rotation: +rotation,
+          vertexCount: +vertexCount,
+          color: color.startsWith('#') ? color : `#${color}`, // Ensure color starts with #
+        });
       } else {
         // Validate and extract general shape fields
         const [x, y, zIndex, width, height, color] = parts.slice(1);
