@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
   const [uploadedFiles, setUploadedFiles] = useState([]); // Store the list of uploaded files
@@ -10,6 +10,16 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
   const [isSaveEnabled, setIsSaveEnabled] = useState(false); // Track if save button should be enabled
 
   const colorOptions = ["Red", "Green", "Blue", "Yellow", "Black", "White"]; // Color options for dropdown
+
+  // Color code mapping
+  const colorCodeMap = {
+    Red: "#ff0000",
+    Green: "#008000",
+    Blue: "#0000ff",
+    Yellow: "#ffff00",
+    Black: "#000000",
+    White: "#ffffff",
+  };
 
   // Styles
   const menuStyle = {
@@ -52,7 +62,7 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
   };
 
   const handleFileClick = (file, index) => {
-    if (!isModalOpen) { // Disable functionality when modal is open
+    if (!isModalOpen) {
       onFileOpen(file.content);
       setActiveFileIndex(index);
     }
@@ -72,7 +82,7 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
         inputs = ["x", "y", "z", "Radius", "Color"];
         break;
       case "Polygon":
-        inputs = ["x", "y", "z", "Rotation angle", "Number of sides"];
+        inputs = ["x", "y", "z", "Rotation angle", "Number of sides", "Width", "Height"];
         break;
       default:
         break;
@@ -92,6 +102,61 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
     const isColorSelected = newValues["Color"];
 
     setIsSaveEnabled(isAllFilled && isColorSelected); // Enable save button only if all are filled
+  };
+
+  const handleSaveShape = () => {
+    // Get the color code based on selected color
+    const colorCode = colorCodeMap[inputValues.Color] || inputValues.Color;
+  
+    // Construct the new shape based on selected shape type
+    let newShape = { type: selectedShape, color: colorCode, zIndex: parseInt(inputValues.z || 0) };
+  
+    // Set the properties based on the shape type
+    if (selectedShape === "Circle") {
+      newShape = {
+        ...newShape,
+        x: parseInt(inputValues.x || 0),
+        y: parseInt(inputValues.y || 0),
+        radius: parseInt(inputValues.Radius || 0), // Only radius for Circle
+      };
+    } else if (selectedShape === "Polygon") {
+      newShape = {
+        ...newShape,
+        x: parseInt(inputValues.x || 0),
+        y: parseInt(inputValues.y || 0),
+        rotation: parseInt(inputValues["Rotation angle"] || 0),
+        vertexCount: parseInt(inputValues["Number of sides"] || 3),
+        vertices: calculatePolygonVertices(inputValues),
+      };
+    } else if (selectedShape === "Rectangle" || selectedShape === "Triangle") {
+      newShape = {
+        ...newShape,
+        x: parseInt(inputValues.x || 0),
+        y: parseInt(inputValues.y || 0),
+        width: parseInt(inputValues.Width || 50),
+        height: parseInt(inputValues.Height || 50),
+      };
+    }
+  
+    // Call the parent component to update the shapes
+    onCreateNewShape(newShape);
+  
+    // Close the modal and reset states
+    setIsModalOpen(false);
+    setSelectedShape(""); // Clear selected shape after saving
+    setShapeInputs([]); // Clear shape inputs
+    setInputValues({}); // Reset input values
+  };
+    
+
+  const calculatePolygonVertices = (inputValues) => {
+    const numberOfSides = parseInt(inputValues["Number of sides"] || 3);
+    const vertices = [];
+    for (let i = 0; i < numberOfSides; i++) {
+      const angle = (i * 2 * Math.PI) / numberOfSides;
+      vertices.push({ x: Math.cos(angle), y: Math.sin(angle) });
+    }
+    return vertices;
   };
 
   return (
@@ -257,7 +322,7 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
             )}
             {isSaveEnabled && (
               <button
-                onClick={() => setIsModalOpen(false)}
+                onClick={handleSaveShape} // Trigger the save functionality
                 style={{
                   padding: "10px 15px",
                   backgroundColor: "#28a745",
@@ -279,4 +344,3 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
 };
 
 export default LeftMenu;
-

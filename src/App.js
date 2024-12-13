@@ -7,9 +7,12 @@ import { adjustShapesToFit } from "./utils/adjustShapesToFit";
 import "./App.css";
 
 const App = () => {
-  const [shapes, setShapes] = useState([]);
-  const [fileName, setFileName] = useState(null);
+  const [shapes, setShapes] = useState([]); // Stores parsed and added shapes
+  const [fileContent, setFileContent] = useState(""); // Stores file content in memory
+  const [fileName, setFileName] = useState(null); // Stores the uploaded file name
+  const [isFileModified, setIsFileModified] = useState(false); // Track if the file has been modified
 
+  // Handle file upload and parse shapes from the file
   const handleFileOpen = (file) => {
     const validExtensions = [".txt", ".shapefile"];
     const fileExtension = file.name.split(".").pop().toLowerCase();
@@ -22,7 +25,7 @@ const App = () => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const fileContent = e.target.result;
-      const parsedShapes = parseShapeFile(fileContent);
+      const parsedShapes = parseShapeFile(fileContent); // Parse shapes
 
       // Adjust shapes to fit within the canvas dimensions
       const canvasWidth = window.innerWidth;
@@ -30,16 +33,57 @@ const App = () => {
       const adjustedShapes = adjustShapesToFit(parsedShapes, canvasWidth, canvasHeight);
 
       setShapes(adjustedShapes); // Update the state with adjusted shapes
-      setFileName(file.name);
+      setFileContent(fileContent); // Save the file content in memory
+      setFileName(file.name); // Set file name
+      setIsFileModified(false); // Reset the modified flag after opening a file
     };
     reader.readAsText(file);
   };
 
+  // Function to handle adding a new shape to the existing shapes list
+  const handleCreateNewShape = (newShape) => {
+    setShapes((prevShapes) => {
+      const updatedShapes = [...prevShapes, newShape];
+      setIsFileModified(true); // Mark the file as modified when a new shape is added
+      return updatedShapes;
+    });
+  };
+
+  // Function to save the updated file (in-memory)
+  const handleSaveFile = () => {
+    // Generate updated content from the shapes
+    let updatedContent = shapes
+      .map((shape) => {
+        let shapeStr = `${shape.type}, ${shape.x}, ${shape.y}, ${shape.zIndex}, `;
+        if (shape.type === "Rectangle" || shape.type === "Triangle") {
+          shapeStr += `${shape.width}, ${shape.height}, ${shape.color}`;
+        } else if (shape.type === "Circle") {
+          shapeStr += `${shape.radius}, ${shape.color}`;
+        } else if (shape.type === "Polygon") {
+          shapeStr += `${shape.rotation}, ${shape.vertexCount}, ${shape.color}`;
+        }
+        return shapeStr;
+      })
+      .join("\n");
+
+    // Update the in-memory content
+    setFileContent(updatedContent);
+
+    // Notify user that the changes have been saved (or trigger a download)
+    alert("Changes have been saved to the file.");
+    setIsFileModified(false); // Reset modified flag after saving
+  };
+
   return (
     <div className="app">
-      <TopToolbar fileName={fileName} />
+      <TopToolbar
+        fileName={fileName}
+        onSaveFile={handleSaveFile}
+        isFileModified={isFileModified}
+        shapes={shapes}
+      /> {/* Pass updated shapes and modification flag to TopToolbar */}
       <div className="main-content">
-        <LeftMenu onFileOpen={handleFileOpen} />
+        <LeftMenu onFileOpen={handleFileOpen} onCreateNewShape={handleCreateNewShape} />
         <ShapeViewport shapes={shapes} />
       </div>
     </div>
