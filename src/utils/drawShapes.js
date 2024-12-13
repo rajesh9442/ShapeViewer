@@ -59,7 +59,7 @@ export const drawShapes = (shapes, canvasRef) => {
         // Ensure the polygon's stroke is visible
         ctx.lineWidth = 2; // Set a line width for the polygon
         ctx.strokeStyle = "black"; // Add a stroke color to make it visible
-        ctx.stroke(); // Apply the stroke
+        // ctx.stroke(); // Apply the stroke
 
         ctx.restore(); // Restore the previous canvas state
       }

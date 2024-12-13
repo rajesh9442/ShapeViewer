@@ -4,19 +4,23 @@ import { drawShapes } from "../utils/drawShapes";
 const ShapeViewport = ({ shapes }) => {
   const canvasRef = useRef(null); // Reference for the canvas element
 
-  // Function to resize the canvas dynamically based on window size
+  // Function to resize the canvas dynamically based on the shapes
   const resizeCanvas = () => {
     const canvas = canvasRef.current;
     if (canvas) {
-      // Set canvas size to the window size
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      // Calculate the canvas size based on all shapes' positions and sizes
+      const canvasWidth = Math.max(window.innerWidth, Math.max(...shapes.map(shape => shape.x + (shape.width || 0))));
+      const canvasHeight = Math.max(window.innerHeight, Math.max(...shapes.map(shape => shape.y + (shape.height || 0))));
+
+      // Set the canvas width and height to fit all shapes
+      canvas.width = canvasWidth;
+      canvas.height = canvasHeight;
     }
   };
 
   // Draw shapes whenever the shapes prop changes
   useEffect(() => {
-    resizeCanvas(); // Set canvas size on mount
+    resizeCanvas(); // Set canvas size on mount and when shapes change
     if (shapes && shapes.length > 0) {
       drawShapes(shapes, canvasRef); // Call the drawShapes function whenever shapes change
     }
@@ -37,7 +41,7 @@ const ShapeViewport = ({ shapes }) => {
         height: "100vh",
         margin: 0,
         padding: 0,
-        overflow: "hidden", // Prevent scrollbars
+        overflow: "auto", // Allow scrollbars to appear if canvas exceeds window size
         position: "relative", // Ensure full coverage
       }}
     >

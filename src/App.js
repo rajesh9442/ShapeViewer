@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import LeftMenu from "./components/LeftMenu";
 import ShapeViewport from "./components/ShapeViewport";
 import TopToolbar from "./components/TopToolbar";
-import { parseShapeFile } from "./utils/parseShapeFile";
-import { adjustShapesToFit } from "./utils/adjustShapesToFit";
+import { parseShapeFile } from "./utils/parseShapeFile"; 
 import "./App.css";
 
 const App = () => {
@@ -27,12 +26,7 @@ const App = () => {
       const fileContent = e.target.result;
       const parsedShapes = parseShapeFile(fileContent); // Parse shapes
 
-      // Adjust shapes to fit within the canvas dimensions
-      const canvasWidth = window.innerWidth;
-      const canvasHeight = window.innerHeight;
-      const adjustedShapes = adjustShapesToFit(parsedShapes, canvasWidth, canvasHeight);
-
-      setShapes(adjustedShapes); // Update the state with adjusted shapes
+      setShapes(parsedShapes); // Directly set parsed shapes
       setFileContent(fileContent); // Save the file content in memory
       setFileName(file.name); // Set file name
       setIsFileModified(false); // Reset the modified flag after opening a file
@@ -43,20 +37,24 @@ const App = () => {
   // Function to handle adding a new shape to the existing shapes list
   const handleCreateNewShape = (newShape) => {
     setShapes((prevShapes) => {
-      // Add the new shape to the existing shapes
       const updatedShapes = [...prevShapes, newShape];
-      
-      // Adjust all shapes to fit the canvas (including the new one)
-      const canvasWidth = window.innerWidth;
-      const canvasHeight = window.innerHeight;
-      const adjustedShapes = adjustShapesToFit(updatedShapes, canvasWidth, canvasHeight);
-  
       setIsFileModified(true); // Mark the file as modified when a new shape is added
-      return adjustedShapes; // Return the adjusted shapes
+      return updatedShapes; // No scaling, just add the new shape
     });
   };
-  
-  
+
+  // Function to update the shape after dragging
+  const handleShapeUpdate = (updatedShape) => {
+    setShapes((prevShapes) => {
+      const updatedShapes = prevShapes.map((shape) =>
+        shape.type === updatedShape.type && shape.zIndex === updatedShape.zIndex
+          ? updatedShape
+          : shape
+      );
+      setIsFileModified(true); // Mark as modified after drag
+      return updatedShapes;
+    });
+  };
 
   // Function to save the updated file (in-memory)
   const handleSaveFile = () => {
@@ -90,10 +88,10 @@ const App = () => {
         onSaveFile={handleSaveFile}
         isFileModified={isFileModified}
         shapes={shapes}
-      /> {/* Pass updated shapes and modification flag to TopToolbar */}
+      />
       <div className="main-content">
         <LeftMenu onFileOpen={handleFileOpen} onCreateNewShape={handleCreateNewShape} />
-        <ShapeViewport shapes={shapes} />
+        <ShapeViewport shapes={shapes} onShapeUpdate={handleShapeUpdate} />
       </div>
     </div>
   );
