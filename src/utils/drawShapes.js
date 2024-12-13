@@ -1,9 +1,13 @@
 export const drawShapes = (shapes, canvasRef) => {
   const canvas = canvasRef.current;
-
+  
   if (!canvas) return; // Ensure the canvas element exists
-
+  
   const ctx = canvas.getContext('2d');
+  
+  // Set canvas dimensions to match the viewport (if necessary)
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
   // Clear the entire canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
