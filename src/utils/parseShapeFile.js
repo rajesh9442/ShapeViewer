@@ -26,7 +26,7 @@ export const parseShapeFile = (fileContent, newShape = null) => {
         };
 
         if (type === 'Circle') {
-          const [x, y, zIndex, radius, color] = parts.slice(1);
+          const [x, y, zIndex, radius, color, rotation] = parts.slice(1);
           if (!validateNumber(x) || !validateNumber(y) || !validateNumber(zIndex) || !validateNumber(radius) || !color) {
             console.warn(`Invalid Circle data (line ${index + 1}): ${line}`);
           } else {
@@ -37,10 +37,11 @@ export const parseShapeFile = (fileContent, newShape = null) => {
               zIndex: +zIndex,
               radius: +radius,
               color: color.startsWith('#') ? color : `#${color}`,
+              rotation: rotation ? parseFloat(rotation) : 0, // Default to 0 if no rotation is provided
             };
           }
         } else if (type === 'Polygon') {
-          const [x, y, zIndex, width, height, vertexCount, color] = parts.slice(1);
+          const [x, y, zIndex, width, height, vertexCount, color, rotation] = parts.slice(1);
           if (!validateNumber(x) || !validateNumber(y) || !validateNumber(zIndex) || !validateNumber(width) || !validateNumber(height) || !validateNumber(vertexCount) || !color) {
             console.warn(`Invalid Polygon data (line ${index + 1}): ${line}`);
           } else {
@@ -53,11 +54,12 @@ export const parseShapeFile = (fileContent, newShape = null) => {
               height: +height,
               vertexCount: +vertexCount,
               color: color.startsWith('#') ? color : `#${color}`,
+              rotation: rotation ? parseFloat(rotation) : 0, // Default to 0 if no rotation is provided
               vertices: generatePolygonVertices(+width, +height, +vertexCount), // Generate the vertices
             };
           }
         } else {
-          const [x, y, zIndex, width, height, color] = parts.slice(1);
+          const [x, y, zIndex, width, height, color, rotation] = parts.slice(1);
           if (!validateNumber(x) || !validateNumber(y) || !validateNumber(zIndex) || !validateNumber(width) || !validateNumber(height) || !color) {
             console.warn(`Invalid shape data (line ${index + 1}): ${line}`);
           } else {
@@ -69,6 +71,7 @@ export const parseShapeFile = (fileContent, newShape = null) => {
               width: +width,
               height: +height,
               color: color.startsWith('#') ? color : `#${color}`,
+              rotation: rotation ? parseFloat(rotation) : 0, // Default to 0 if no rotation is provided
             };
           }
         }

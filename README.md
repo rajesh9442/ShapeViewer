@@ -12,10 +12,10 @@ Features:
     File format example:
 
     // my-shape-file.shapefile
-    Rectangle, 0, 0, 2, 50, 50, ff0000; // type, x-axis, y-axis, z-index, width, height, color
-    Circle, 500, 100, 3, 150, 0000ff;  // type, x-axis, y-axis, z-index, radius, color
-    Triangle, 3, 30, 7, 50, 30, 0000ff; // type, x-axis, y-axis, z-index, width, height, color
-    Polygon, 500, 70, 4, 100, 20, 7, #00a0ff // x, y, z, width of imaginary rectangle, height of imaginary rectangle, number of sides, color
+    Rectangle, 0, 0, 2, 50, 50, ff0000, 73; // type, x-axis, y-axis, z-index, width, height, color, rotation angle(optional)
+    Circle, 500, 100, 3, 150, 0000ff;  // type, x-axis, y-axis, z-index, radius, color, rotation angle(optional)
+    Triangle, 3, 30, 7, 50, 30, 0000ff; // type, x-axis, y-axis, z-index, width, height, color, rotation angle(optional)
+    Polygon, 500, 70, 4, 100, 20, 7, #00a0ff, 46 // x, y, z, width of imaginary rectangle, height of imaginary rectangle, number of sides, color, rotation angle(optional)
 
     Currently, only four shapes are available: Rectangle, Circle, Triangle, and Polygon.
     You can upload multiple files by clicking the "Open shape file" button again.

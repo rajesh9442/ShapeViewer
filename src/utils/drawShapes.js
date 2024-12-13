@@ -12,39 +12,52 @@ export const drawShapes = (shapes, canvasRef) => {
   const sortedShapes = [...shapes].sort((a, b) => a.zIndex - b.zIndex);
 
   sortedShapes.forEach(
-    ({ type, x, y, width, height, color, radius, vertexCount, vertices }) => {
+    ({ type, x, y, width, height, color, radius, vertexCount, vertices, rotation }) => {
       ctx.fillStyle = color;
 
+      // Rotation handling
+      const angleInRadians = (rotation || 0) * (Math.PI / 180); // Convert degrees to radians
+
       if (type === "Rectangle" && width && height) {
-        ctx.fillRect(x, y, width, height); // Draw rectangle
+        // Set rotation transformation at the center of the rectangle
+        ctx.save(); // Save current context state
+        ctx.translate(x + width / 2, y + height / 2); // Move the origin to the center
+        ctx.rotate(angleInRadians); // Apply the rotation
+        ctx.fillRect(-width / 2, -height / 2, width, height); // Draw the rectangle centered at the origin
+        ctx.restore(); // Restore context state
       } else if (type === "Triangle" && width && height) {
+        // Set rotation transformation at the center of the triangle
+        ctx.save(); // Save current context state
+        ctx.translate(x + width / 2, y + height / 2); // Move the origin to the center
+        ctx.rotate(angleInRadians); // Apply the rotation
         ctx.beginPath();
-        ctx.moveTo(x, y); // Starting point
-        ctx.lineTo(x + width / 2, y - height); // Top point
-        ctx.lineTo(x + width, y); // Bottom-right point
+        ctx.moveTo(-width / 2, height / 2); // Bottom-left point
+        ctx.lineTo(width / 2, height / 2); // Bottom-right point
+        ctx.lineTo(0, -height); // Top point
         ctx.closePath();
         ctx.fill(); // Fill the triangle
+        ctx.restore(); // Restore context state
       } else if (type === "Circle" && radius) {
+        // Set rotation transformation at the center of the circle
+        ctx.save(); // Save current context state
+        ctx.translate(x, y); // Move the origin to the center of the circle
+        ctx.rotate(angleInRadians); // Apply the rotation
         ctx.beginPath();
-        ctx.arc(x, y, radius, 0, 2 * Math.PI); // Draw circle
+        ctx.arc(0, 0, radius, 0, 2 * Math.PI); // Draw the circle centered at the origin
         ctx.closePath();
         ctx.fill(); // Fill the circle
+        ctx.restore(); // Restore context state
       } else if (type === "Polygon" && vertices && vertexCount >= 3) {
-        ctx.save();
-
-        // Debugging: Log the polygon's position and coordinates
-        console.log('Polygon Position: ', x, y);
-        console.log('Polygon Vertices: ', vertices);
+        // Set rotation transformation at the center of the polygon
+        ctx.save(); // Save current context state
+        ctx.translate(x, y); // Move the origin to the center of the polygon
+        ctx.rotate(angleInRadians); // Apply the rotation
 
         ctx.beginPath();
-
         // Draw the polygon by connecting the vertices
         vertices.forEach((vertex, i) => {
-          // The vertex coordinates are relative to (x, y), so we add them
-          const vertexX = x + vertex.x; // Adjust by x position of polygon
-          const vertexY = y + vertex.y; // Adjust by y position of polygon
-
-          console.log(`Vertex ${i}: (${vertexX}, ${vertexY})`);  // Debug the final position
+          const vertexX = vertex.x;
+          const vertexY = vertex.y;
 
           if (i === 0) {
             ctx.moveTo(vertexX, vertexY); // Start point
@@ -55,13 +68,7 @@ export const drawShapes = (shapes, canvasRef) => {
 
         ctx.closePath();
         ctx.fill(); // Fill the polygon
-
-        // Ensure the polygon's stroke is visible
-        ctx.lineWidth = 2; // Set a line width for the polygon
-        ctx.strokeStyle = "black"; // Add a stroke color to make it visible
-        // ctx.stroke(); // Apply the stroke
-
-        ctx.restore(); // Restore the previous canvas state
+        ctx.restore(); // Restore context state
       }
     }
   );
