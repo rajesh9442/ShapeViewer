@@ -1,70 +1,33 @@
-# Getting Started with Create React App
+Shape Viewer App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+You can add 100,000+ shapes using this app!
 
-## Available Scripts
+Features:
 
-In the project directory, you can run:
+1) Upload Shape File:
 
-### `npm start`
+    Click the "Open shape file" button to upload your file.
+    Supported file extensions: .txt, .shapefile
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+    File format example:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+    // my-shape-file.shapefile
+    Rectangle, 0, 0, 2, 50, 50, ff0000; // type, x-axis, y-axis, z-index, width, height, color
+    Circle, 500, 100, 3, 150, 0000ff;  // type, x-axis, y-axis, z-index, radius, color
+    Triangle, 3, 30, 7, 50, 30, 0000ff; // type, x-axis, y-axis, z-index, width, height, color
+    Polygon, 500, 70, 4, 100, 20, 7, #00a0ff // x, y, z, width of imaginary rectangle, height of imaginary rectangle, number of sides, color
 
-### `npm test`
+    Currently, only four shapes are available: Rectangle, Circle, Triangle, and Polygon.
+    You can upload multiple files by clicking the "Open shape file" button again.
+    
+2) Create New Shape:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    After uploading a file, click the "Create New Shape" button to add new shapes.
+    You can select the shape type you want and provide the required input values.
+    Available shapes: Rectangle, Circle, Triangle, Polygon.
 
-### `npm run build`
+3) Save Changes:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    After creating new shapes, you can save the changes as a new file using the "Save Changes" button on the top toolbar.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Enjoy using my app!
