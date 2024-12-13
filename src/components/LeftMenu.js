@@ -50,23 +50,22 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
       name: file.name,
       content: file,
     }));
-  
+
     // Check if the file already exists based on its name
     const updatedFiles = uploadedFiles.filter((file) => file.name !== newFiles[0].name);
-  
+
     // Add the new file to the top of the list
     const finalFiles = [newFiles[0], ...updatedFiles];
-  
+
     setUploadedFiles(finalFiles); // Set the updated files list
-  
+
     if (newFiles.length > 0) {
       onFileOpen(newFiles[0].content); // Open the new file
       setActiveFileIndex(0); // Set the active file to the newly added one
     }
-  
+
     event.target.value = ""; // Reset the input field
   };
-  
 
   const handleFileClick = (file, index) => {
     if (!isModalOpen) {
@@ -101,14 +100,31 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
   };
 
   const handleInputChange = (e, key) => {
-    const newValues = { ...inputValues, [key]: e.target.value };
-    setInputValues(newValues);
+    const value = e.target.value;
 
-    // Check if all required fields are filled and color is selected
-    const isAllFilled = shapeInputs.every((input) => input === "Color" || newValues[input]?.trim());
-    const isColorSelected = newValues["Color"];
+    // If it's the Color field, update it separately
+    if (key === "Color") {
+      const newValues = { ...inputValues, [key]: value };
+      setInputValues(newValues);
 
-    setIsSaveEnabled(isAllFilled && isColorSelected); // Enable save button only if all are filled
+      // Check if all required fields are filled and color is selected
+      const isAllFilled = shapeInputs.every((input) => input === "Color" || newValues[input]?.trim());
+      const isColorSelected = newValues["Color"];
+
+      setIsSaveEnabled(isAllFilled && isColorSelected); // Enable save button only if all are filled
+    } else {
+      // Allow only positive numbers (no symbols, negative numbers, or words)
+      if (/^\d+$/.test(value) || value === "") {
+        const newValues = { ...inputValues, [key]: value };
+        setInputValues(newValues);
+
+        // Check if all required fields are filled and color is selected
+        const isAllFilled = shapeInputs.every((input) => input === "Color" || newValues[input]?.trim());
+        const isColorSelected = newValues["Color"];
+
+        setIsSaveEnabled(isAllFilled && isColorSelected); // Enable save button only if all are filled
+      }
+    }
   };
 
   const handleSaveShape = () => {
@@ -319,7 +335,7 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
                         </select>
                       ) : (
                         <input
-                          type="text"
+                          type="number" // Only positive numbers allowed
                           value={inputValues[input] || ""}
                           onChange={(e) => handleInputChange(e, input)}
                           style={{
@@ -328,6 +344,7 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
                             borderRadius: "4px",
                             width: "150px",
                           }}
+                          min="0" // Restrict to positive numbers only
                         />
                       )}
                     </div>

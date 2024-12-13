@@ -19,9 +19,15 @@ export const parseShapeFile = (fileContent, newShape = null) => {
         const type = parts[0];
         let shape = null;
 
+        // Helper function to validate if a number is valid and non-negative
+        const validateNumber = (value) => {
+          const num = parseFloat(value);
+          return !isNaN(num) && num >= 0;
+        };
+
         if (type === 'Circle') {
           const [x, y, zIndex, radius, color] = parts.slice(1);
-          if (isNaN(x) || isNaN(y) || isNaN(zIndex) || isNaN(radius) || !color) {
+          if (!validateNumber(x) || !validateNumber(y) || !validateNumber(zIndex) || !validateNumber(radius) || !color) {
             console.warn(`Invalid Circle data (line ${index + 1}): ${line}`);
           } else {
             shape = {
@@ -35,7 +41,7 @@ export const parseShapeFile = (fileContent, newShape = null) => {
           }
         } else if (type === 'Polygon') {
           const [x, y, zIndex, width, height, vertexCount, color] = parts.slice(1);
-          if (isNaN(x) || isNaN(y) || isNaN(zIndex) || isNaN(width) || isNaN(height) || isNaN(vertexCount) || !color) {
+          if (!validateNumber(x) || !validateNumber(y) || !validateNumber(zIndex) || !validateNumber(width) || !validateNumber(height) || !validateNumber(vertexCount) || !color) {
             console.warn(`Invalid Polygon data (line ${index + 1}): ${line}`);
           } else {
             shape = {
@@ -50,10 +56,9 @@ export const parseShapeFile = (fileContent, newShape = null) => {
               vertices: generatePolygonVertices(+width, +height, +vertexCount), // Generate the vertices
             };
           }
-        }
-         else {
+        } else {
           const [x, y, zIndex, width, height, color] = parts.slice(1);
-          if (isNaN(x) || isNaN(y) || isNaN(zIndex) || isNaN(width) || isNaN(height) || !color) {
+          if (!validateNumber(x) || !validateNumber(y) || !validateNumber(zIndex) || !validateNumber(width) || !validateNumber(height) || !color) {
             console.warn(`Invalid shape data (line ${index + 1}): ${line}`);
           } else {
             shape = {
