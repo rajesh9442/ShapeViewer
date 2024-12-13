@@ -43,11 +43,20 @@ const App = () => {
   // Function to handle adding a new shape to the existing shapes list
   const handleCreateNewShape = (newShape) => {
     setShapes((prevShapes) => {
+      // Add the new shape to the existing shapes
       const updatedShapes = [...prevShapes, newShape];
+      
+      // Adjust all shapes to fit the canvas (including the new one)
+      const canvasWidth = window.innerWidth;
+      const canvasHeight = window.innerHeight;
+      const adjustedShapes = adjustShapesToFit(updatedShapes, canvasWidth, canvasHeight);
+  
       setIsFileModified(true); // Mark the file as modified when a new shape is added
-      return updatedShapes;
+      return adjustedShapes; // Return the adjusted shapes
     });
   };
+  
+  
 
   // Function to save the updated file (in-memory)
   const handleSaveFile = () => {

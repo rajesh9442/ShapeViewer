@@ -31,21 +31,36 @@ export const drawShapes = (shapes, canvasRef) => {
         ctx.fill(); // Fill the circle
       } else if (type === "Polygon" && vertices && vertexCount >= 3) {
         ctx.save();
-        // Center the polygon by translating the canvas context
-        ctx.translate(x, y); // Center at (x, y)
+
+        // Debugging: Log the polygon's position and coordinates
+        console.log('Polygon Position: ', x, y);
+        console.log('Polygon Vertices: ', vertices);
+
         ctx.beginPath();
 
         // Draw the polygon by connecting the vertices
         vertices.forEach((vertex, i) => {
+          // The vertex coordinates are relative to (x, y), so we add them
+          const vertexX = x + vertex.x; // Adjust by x position of polygon
+          const vertexY = y + vertex.y; // Adjust by y position of polygon
+
+          console.log(`Vertex ${i}: (${vertexX}, ${vertexY})`);  // Debug the final position
+
           if (i === 0) {
-            ctx.moveTo(vertex.x, vertex.y); // Start point
+            ctx.moveTo(vertexX, vertexY); // Start point
           } else {
-            ctx.lineTo(vertex.x, vertex.y); // Draw each line
+            ctx.lineTo(vertexX, vertexY); // Draw each line
           }
         });
 
         ctx.closePath();
         ctx.fill(); // Fill the polygon
+
+        // Ensure the polygon's stroke is visible
+        ctx.lineWidth = 2; // Set a line width for the polygon
+        ctx.strokeStyle = "black"; // Add a stroke color to make it visible
+        ctx.stroke(); // Apply the stroke
+
         ctx.restore(); // Restore the previous canvas state
       }
     }
