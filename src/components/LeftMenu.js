@@ -50,16 +50,23 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
       name: file.name,
       content: file,
     }));
-
-    setUploadedFiles((prev) => [...newFiles, ...prev]);
-
+  
+    // Check if the file already exists based on its name
+    const updatedFiles = uploadedFiles.filter((file) => file.name !== newFiles[0].name);
+  
+    // Add the new file to the top of the list
+    const finalFiles = [newFiles[0], ...updatedFiles];
+  
+    setUploadedFiles(finalFiles); // Set the updated files list
+  
     if (newFiles.length > 0) {
-      onFileOpen(newFiles[0].content);
-      setActiveFileIndex(0);
+      onFileOpen(newFiles[0].content); // Open the new file
+      setActiveFileIndex(0); // Set the active file to the newly added one
     }
-
+  
     event.target.value = ""; // Reset the input field
   };
+  
 
   const handleFileClick = (file, index) => {
     if (!isModalOpen) {
