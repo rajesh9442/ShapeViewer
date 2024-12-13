@@ -6,8 +6,14 @@ const resizeCanvas = (canvasRef, shapes) => {
   const canvas = canvasRef.current;
   if (canvas) {
     // Calculate the canvas size based on all shapes' positions and sizes
-    const canvasWidth = Math.max(window.innerWidth, Math.max(...shapes.map(shape => shape.x + (shape.width || 0))));
-    const canvasHeight = Math.max(window.innerHeight, Math.max(...shapes.map(shape => shape.y + (shape.height || 0))));
+    const canvasWidth = Math.max(
+      window.innerWidth,
+      Math.max(...shapes.map((shape) => shape.x + (shape.width || 0)))
+    );
+    const canvasHeight = Math.max(
+      window.innerHeight,
+      Math.max(...shapes.map((shape) => shape.y + (shape.height || 0)))
+    );
 
     // Set the canvas width and height to fit all shapes
     canvas.width = canvasWidth;
@@ -30,7 +36,9 @@ const ShapeViewport = ({ shapes }) => {
 
     // Cleanup event listener on component unmount
     return () => {
-      window.removeEventListener("resize", () => resizeCanvas(canvasRef, shapes));
+      window.removeEventListener("resize", () =>
+        resizeCanvas(canvasRef, shapes)
+      );
     };
   }, [shapes]); // Only re-render when shapes change
 

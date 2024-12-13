@@ -36,17 +36,23 @@ const TopToolbar = ({ fileName, onSaveFile, isFileModified, shapes }) => {
       .map((shape) => {
         let shapeStr = `${shape.type}, ${shape.x}, ${shape.y}, ${shape.zIndex}, `;
 
+        // Add rotation if it's provided
+        const rotation = shape.rotation !== undefined ? shape.rotation : 0;
+
         if (shape.type === "Rectangle" || shape.type === "Triangle") {
-          shapeStr += `${shape.width}, ${shape.height}, ${shape.color}`;
+          shapeStr += `${shape.width}, ${shape.height}, ${shape.color}, ${rotation}`;
         } else if (shape.type === "Circle") {
-          shapeStr += `${shape.radius}, ${shape.color}`;
+          shapeStr += `${shape.radius}, ${shape.color}, ${rotation}`;
         } else if (shape.type === "Polygon") {
           // Add vertices information
           const verticesData = shape.vertices
-            ? shape.vertices.map((vertex) => `(${vertex.x}, ${vertex.y})`).join(" ")
+            ? shape.vertices
+                .map((vertex) => `(${vertex.x}, ${vertex.y})`)
+                .join(" ")
             : "";
-          shapeStr += `${shape.width}, ${shape.height}, ${shape.vertexCount}, ${shape.color}, ${verticesData}`;
+          shapeStr += `${shape.width}, ${shape.height}, ${shape.vertexCount}, ${shape.color}, ${verticesData}, ${rotation}`;
         }
+
         return shapeStr;
       })
       .join("\n");
@@ -63,7 +69,9 @@ const TopToolbar = ({ fileName, onSaveFile, isFileModified, shapes }) => {
     }
 
     // Create a blob from the formatted content
-    const blob = new Blob([formattedContent], { type: "text/plain;charset=utf-8" });
+    const blob = new Blob([formattedContent], {
+      type: "text/plain;charset=utf-8",
+    });
 
     // Create a link element
     const link = document.createElement("a");
@@ -91,8 +99,8 @@ const TopToolbar = ({ fileName, onSaveFile, isFileModified, shapes }) => {
           onClick={handleDownload} // Call handleDownload when clicked
           style={saveButtonStyle}
           disabled={!isFileModified || !fileName} // Disable if no changes were made or no file is uploaded
-          onMouseEnter={(e) => e.target.style.backgroundColor = "#218838"} // Darker green on hover
-          onMouseLeave={(e) => e.target.style.backgroundColor = "#28a745"} // Reset to original green color
+          onMouseEnter={(e) => (e.target.style.backgroundColor = "#218838")} // Darker green on hover
+          onMouseLeave={(e) => (e.target.style.backgroundColor = "#28a745")} // Reset to original green color
         >
           Save Changes
         </button>

@@ -12,7 +12,18 @@ export const drawShapes = (shapes, canvasRef) => {
   const sortedShapes = [...shapes].sort((a, b) => a.zIndex - b.zIndex);
 
   sortedShapes.forEach(
-    ({ type, x, y, width, height, color, radius, vertexCount, vertices, rotation }) => {
+    ({
+      type,
+      x,
+      y,
+      width,
+      height,
+      color,
+      radius,
+      vertexCount,
+      vertices,
+      rotation,
+    }) => {
       ctx.fillStyle = color;
 
       // Rotation handling

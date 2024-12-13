@@ -52,7 +52,9 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
     }));
 
     // Check if the file already exists based on its name
-    const updatedFiles = uploadedFiles.filter((file) => file.name !== newFiles[0].name);
+    const updatedFiles = uploadedFiles.filter(
+      (file) => file.name !== newFiles[0].name
+    );
 
     // Add the new file to the top of the list
     const finalFiles = [newFiles[0], ...updatedFiles];
@@ -77,21 +79,23 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
   // Modal functionality
   const handleShapeSelection = (shape) => {
     setSelectedShape(shape);
-    let inputs = [];
+    let inputs = ["x", "y", "z", "Color"]; // Common inputs for all shapes
+    if (shape === "Rectangle" || shape === "Triangle") {
+      inputs = [...inputs, "Width", "Height"];
+    } else if (shape === "Circle") {
+      inputs = [...inputs, "Radius"];
+    } else if (shape === "Polygon") {
+      inputs = [...inputs, "Number of sides", "Width", "Height"];
+    }
 
-    switch (shape) {
-      case "Rectangle":
-      case "Triangle":
-        inputs = ["x", "y", "z", "Width", "Height", "Color"];
-        break;
-      case "Circle":
-        inputs = ["x", "y", "z", "Radius", "Color"];
-        break;
-      case "Polygon":
-        inputs = ["x", "y", "z", "Number of sides", "Width", "Height", "Color"];
-        break;
-      default:
-        break;
+    // Add rotation input for shapes that support rotation
+    if (
+      shape === "Rectangle" ||
+      shape === "Circle" ||
+      shape === "Polygon" ||
+      shape === "Triangle"
+    ) {
+      inputs.push("Rotation");
     }
 
     setShapeInputs(inputs);
@@ -108,7 +112,9 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
       setInputValues(newValues);
 
       // Check if all required fields are filled and color is selected
-      const isAllFilled = shapeInputs.every((input) => input === "Color" || newValues[input]?.trim());
+      const isAllFilled = shapeInputs.every(
+        (input) => input === "Color" || newValues[input]?.trim()
+      );
       const isColorSelected = newValues["Color"];
 
       setIsSaveEnabled(isAllFilled && isColorSelected); // Enable save button only if all are filled
@@ -119,7 +125,9 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
         setInputValues(newValues);
 
         // Check if all required fields are filled and color is selected
-        const isAllFilled = shapeInputs.every((input) => input === "Color" || newValues[input]?.trim());
+        const isAllFilled = shapeInputs.every(
+          (input) => input === "Color" || newValues[input]?.trim()
+        );
         const isColorSelected = newValues["Color"];
 
         setIsSaveEnabled(isAllFilled && isColorSelected); // Enable save button only if all are filled
@@ -132,7 +140,11 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
     const colorCode = colorCodeMap[inputValues.Color] || inputValues.Color;
 
     // Construct the new shape based on selected shape type
-    let newShape = { type: selectedShape, color: colorCode, zIndex: parseInt(inputValues.z || 0) };
+    let newShape = {
+      type: selectedShape,
+      color: colorCode,
+      zIndex: parseInt(inputValues.z || 0),
+    };
 
     // Set the properties based on the shape type
     if (selectedShape === "Circle") {
@@ -141,6 +153,7 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
         x: parseInt(inputValues.x || 0),
         y: parseInt(inputValues.y || 0),
         radius: parseInt(inputValues.Radius || 0), // Only radius for Circle
+        rotation: parseFloat(inputValues.Rotation) || 0, // Apply rotation
       };
     } else if (selectedShape === "Polygon") {
       newShape = {
@@ -148,9 +161,10 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
         x: parseInt(inputValues.x || 0),
         y: parseInt(inputValues.y || 0),
         vertexCount: parseInt(inputValues["Number of sides"] || 3),
-        width: parseInt(inputValues.Width || 50),  // Width for Polygon
+        width: parseInt(inputValues.Width || 50), // Width for Polygon
         height: parseInt(inputValues.Height || 50), // Height for Polygon
-        vertices: generatePolygonVertices(inputValues),  // Generate the vertices for the polygon
+        vertices: generatePolygonVertices(inputValues), // Generate the vertices for the polygon
+        rotation: parseFloat(inputValues.Rotation) || 0, // Apply rotation
       };
     } else if (selectedShape === "Rectangle" || selectedShape === "Triangle") {
       newShape = {
@@ -159,6 +173,7 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
         y: parseInt(inputValues.y || 0),
         width: parseInt(inputValues.Width || 50),
         height: parseInt(inputValues.Height || 50),
+        rotation: parseFloat(inputValues.Rotation) || 0, // Apply rotation
       };
     }
 
@@ -182,8 +197,8 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
 
     for (let i = 0; i < numberOfSides; i++) {
       const angle = i * angleStep;
-      const x = width / 2 * Math.cos(angle); // Scale based on width
-      const y = height / 2 * Math.sin(angle); // Scale based on height
+      const x = (width / 2) * Math.cos(angle); // Scale based on width
+      const y = (height / 2) * Math.sin(angle); // Scale based on height
       vertices.push({ x, y });
     }
 
@@ -217,8 +232,8 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
             marginBottom: "10px",
             transition: "background-color 0.3s ease", // Smooth transition for hover effect
           }}
-          onMouseEnter={(e) => e.target.style.backgroundColor = "#006400"} // Darker green on hover
-          onMouseLeave={(e) => e.target.style.backgroundColor = "green"} // Reset to original green color
+          onMouseEnter={(e) => (e.target.style.backgroundColor = "#006400")} // Darker green on hover
+          onMouseLeave={(e) => (e.target.style.backgroundColor = "green")} // Reset to original green color
         >
           Open shape file
         </button>
@@ -241,8 +256,8 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
             textAlign: "center",
             transition: "background-color 0.3s ease", // Smooth transition for hover effect
           }}
-          onMouseEnter={(e) => e.target.style.backgroundColor = "#b0b3b8"} // Darker grey on hover
-          onMouseLeave={(e) => e.target.style.backgroundColor = "#d3d3d3"} // Reset to original grey color
+          onMouseEnter={(e) => (e.target.style.backgroundColor = "#b0b3b8")} // Darker grey on hover
+          onMouseLeave={(e) => (e.target.style.backgroundColor = "#d3d3d3")} // Reset to original grey color
         >
           <span style={{ marginRight: "8px", fontSize: "18px" }}>➕</span>
           Create New shape
@@ -314,11 +329,15 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
 
             {selectedShape && (
               <>
-                <h4 style={{ marginTop: "20px" }}>Enter {selectedShape} Details</h4>
+                <h4 style={{ marginTop: "20px" }}>
+                  Enter {selectedShape} Details
+                </h4>
                 <form>
                   {shapeInputs.map((input, index) => (
                     <div key={index} style={{ marginBottom: "10px" }}>
-                      <label style={{ marginRight: "10px", fontWeight: "bold" }}>
+                      <label
+                        style={{ marginRight: "10px", fontWeight: "bold" }}
+                      >
                         {input}:
                       </label>
                       {input === "Color" ? (
