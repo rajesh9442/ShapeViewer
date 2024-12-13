@@ -25,33 +25,36 @@ const TopToolbar = ({ fileName, onSaveFile, isFileModified, shapes }) => {
     borderRadius: "4px",
     cursor: isFileModified ? "pointer" : "not-allowed", // Disable if no changes
     opacity: isFileModified ? 1 : 0.5, // Make the button less prominent if disabled
+    transition: "background-color 0.3s ease", // Smooth transition for hover effect
+  };
+
+  const buttonHoverStyle = {
+    backgroundColor: "#218838", // Darker green for hover effect
   };
 
   // Function to format shapes into the desired text format
-  // Function to format shapes into the desired text format
-const formatShapesForDownload = (shapes) => {
-  if (!shapes || !Array.isArray(shapes)) return ""; // Ensure shapes is a valid array
+  const formatShapesForDownload = (shapes) => {
+    if (!shapes || !Array.isArray(shapes)) return ""; // Ensure shapes is a valid array
 
-  return shapes
-    .map((shape) => {
-      let shapeStr = `${shape.type}, ${shape.x}, ${shape.y}, ${shape.zIndex}, `;
+    return shapes
+      .map((shape) => {
+        let shapeStr = `${shape.type}, ${shape.x}, ${shape.y}, ${shape.zIndex}, `;
 
-      if (shape.type === "Rectangle" || shape.type === "Triangle") {
-        shapeStr += `${shape.width}, ${shape.height}, ${shape.color}`;
-      } else if (shape.type === "Circle") {
-        shapeStr += `${shape.radius}, ${shape.color}`;
-      } else if (shape.type === "Polygon") {
-        // Add vertices information
-        const verticesData = shape.vertices
-          ? shape.vertices.map(vertex => `(${vertex.x}, ${vertex.y})`).join(" ")
-          : "";
-        shapeStr += `${shape.width}, ${shape.height}, ${shape.vertexCount}, ${shape.color}, ${verticesData}`;
-      }
-      return shapeStr;
-    })
-    .join("\n");
-};
-
+        if (shape.type === "Rectangle" || shape.type === "Triangle") {
+          shapeStr += `${shape.width}, ${shape.height}, ${shape.color}`;
+        } else if (shape.type === "Circle") {
+          shapeStr += `${shape.radius}, ${shape.color}`;
+        } else if (shape.type === "Polygon") {
+          // Add vertices information
+          const verticesData = shape.vertices
+            ? shape.vertices.map((vertex) => `(${vertex.x}, ${vertex.y})`).join(" ")
+            : "";
+          shapeStr += `${shape.width}, ${shape.height}, ${shape.vertexCount}, ${shape.color}, ${verticesData}`;
+        }
+        return shapeStr;
+      })
+      .join("\n");
+  };
 
   // Function to download the updated file
   const handleDownload = () => {
@@ -92,6 +95,8 @@ const formatShapesForDownload = (shapes) => {
           onClick={handleDownload} // Call handleDownload when clicked
           style={saveButtonStyle}
           disabled={!isFileModified || !fileName} // Disable if no changes were made or no file is uploaded
+          onMouseEnter={(e) => e.target.style.backgroundColor = "#218838"} // Darker green on hover
+          onMouseLeave={(e) => e.target.style.backgroundColor = "#28a745"} // Reset to original green color
         >
           Save Changes
         </button>

@@ -215,7 +215,10 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
             cursor: "pointer",
             textAlign: "center",
             marginBottom: "10px",
+            transition: "background-color 0.3s ease", // Smooth transition for hover effect
           }}
+          onMouseEnter={(e) => e.target.style.backgroundColor = "#006400"} // Darker green on hover
+          onMouseLeave={(e) => e.target.style.backgroundColor = "green"} // Reset to original green color
         >
           Open shape file
         </button>
@@ -230,13 +233,16 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
             display: "inline-flex",
             alignItems: "center",
             padding: "10px 15px",
-            backgroundColor: uploadedFiles.length === 0 ? "#d3d3d3" : "#d3d3d3", // Disabled style when no files
+            backgroundColor: "#d3d3d3", // Grey color
             fontSize: "16px",
             border: "2px dotted #333",
             borderRadius: "4px",
             cursor: uploadedFiles.length === 0 ? "not-allowed" : "pointer", // Disabled cursor
             textAlign: "center",
+            transition: "background-color 0.3s ease", // Smooth transition for hover effect
           }}
+          onMouseEnter={(e) => e.target.style.backgroundColor = "#b0b3b8"} // Darker grey on hover
+          onMouseLeave={(e) => e.target.style.backgroundColor = "#d3d3d3"} // Reset to original grey color
         >
           <span style={{ marginRight: "8px", fontSize: "18px" }}>➕</span>
           Create New shape
