@@ -82,7 +82,7 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
         inputs = ["x", "y", "z", "Radius", "Color"];
         break;
       case "Polygon":
-        inputs = ["x", "y", "z", "Rotation angle", "Number of sides", "Width", "Height"];
+        inputs = ["x", "y", "z", "Number of sides", "Width", "Height", "Color"];
         break;
       default:
         break;
@@ -107,10 +107,10 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
   const handleSaveShape = () => {
     // Get the color code based on selected color
     const colorCode = colorCodeMap[inputValues.Color] || inputValues.Color;
-  
+
     // Construct the new shape based on selected shape type
     let newShape = { type: selectedShape, color: colorCode, zIndex: parseInt(inputValues.z || 0) };
-  
+
     // Set the properties based on the shape type
     if (selectedShape === "Circle") {
       newShape = {
@@ -124,9 +124,10 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
         ...newShape,
         x: parseInt(inputValues.x || 0),
         y: parseInt(inputValues.y || 0),
-        rotation: parseInt(inputValues["Rotation angle"] || 0),
         vertexCount: parseInt(inputValues["Number of sides"] || 3),
-        vertices: calculatePolygonVertices(inputValues),
+        width: parseInt(inputValues.Width || 50),  // Width for Polygon
+        height: parseInt(inputValues.Height || 50), // Height for Polygon
+        vertices: generatePolygonVertices(inputValues),  // Generate the vertices for the polygon
       };
     } else if (selectedShape === "Rectangle" || selectedShape === "Triangle") {
       newShape = {
@@ -137,25 +138,32 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
         height: parseInt(inputValues.Height || 50),
       };
     }
-  
+
     // Call the parent component to update the shapes
     onCreateNewShape(newShape);
-  
+
     // Close the modal and reset states
     setIsModalOpen(false);
     setSelectedShape(""); // Clear selected shape after saving
     setShapeInputs([]); // Clear shape inputs
     setInputValues({}); // Reset input values
   };
-    
 
-  const calculatePolygonVertices = (inputValues) => {
+  // Function to generate vertices for polygon based on width, height, and number of sides
+  const generatePolygonVertices = (inputValues) => {
     const numberOfSides = parseInt(inputValues["Number of sides"] || 3);
+    const width = parseInt(inputValues.Width || 50); // Default width for polygon
+    const height = parseInt(inputValues.Height || 50); // Default height for polygon
     const vertices = [];
+    const angleStep = (2 * Math.PI) / numberOfSides;
+
     for (let i = 0; i < numberOfSides; i++) {
-      const angle = (i * 2 * Math.PI) / numberOfSides;
-      vertices.push({ x: Math.cos(angle), y: Math.sin(angle) });
+      const angle = i * angleStep;
+      const x = width / 2 * Math.cos(angle); // Scale based on width
+      const y = height / 2 * Math.sin(angle); // Scale based on height
+      vertices.push({ x, y });
     }
+
     return vertices;
   };
 

@@ -28,23 +28,30 @@ const TopToolbar = ({ fileName, onSaveFile, isFileModified, shapes }) => {
   };
 
   // Function to format shapes into the desired text format
-  const formatShapesForDownload = (shapes) => {
-    if (!shapes || !Array.isArray(shapes)) return ""; // Ensure shapes is a valid array
+  // Function to format shapes into the desired text format
+const formatShapesForDownload = (shapes) => {
+  if (!shapes || !Array.isArray(shapes)) return ""; // Ensure shapes is a valid array
 
-    return shapes
-      .map((shape) => {
-        let shapeStr = `${shape.type}, ${shape.x}, ${shape.y}, ${shape.zIndex}, `;
-        if (shape.type === "Rectangle" || shape.type === "Triangle") {
-          shapeStr += `${shape.width}, ${shape.height}, ${shape.color}`;
-        } else if (shape.type === "Circle") {
-          shapeStr += `${shape.radius}, ${shape.color}`;
-        } else if (shape.type === "Polygon") {
-          shapeStr += `${shape.rotation}, ${shape.vertexCount}, ${shape.color}`;
-        }
-        return shapeStr;
-      })
-      .join("\n");
-  };
+  return shapes
+    .map((shape) => {
+      let shapeStr = `${shape.type}, ${shape.x}, ${shape.y}, ${shape.zIndex}, `;
+
+      if (shape.type === "Rectangle" || shape.type === "Triangle") {
+        shapeStr += `${shape.width}, ${shape.height}, ${shape.color}`;
+      } else if (shape.type === "Circle") {
+        shapeStr += `${shape.radius}, ${shape.color}`;
+      } else if (shape.type === "Polygon") {
+        // Add vertices information
+        const verticesData = shape.vertices
+          ? shape.vertices.map(vertex => `(${vertex.x}, ${vertex.y})`).join(" ")
+          : "";
+        shapeStr += `${shape.width}, ${shape.height}, ${shape.vertexCount}, ${shape.color}, ${verticesData}`;
+      }
+      return shapeStr;
+    })
+    .join("\n");
+};
+
 
   // Function to download the updated file
   const handleDownload = () => {

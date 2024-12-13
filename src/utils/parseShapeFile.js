@@ -2,19 +2,14 @@ export const parseShapeFile = (fileContent, newShape = null) => {
   const shapes = [];
 
   if (fileContent) {
-    // Split the file content by new lines and filter out empty lines and comments
     const lines = fileContent
       .split('\n')
       .map((line) => line.trim())
-      .filter((line) => line !== '' && !line.startsWith('//')); // Ignore comments and blank lines
+      .filter((line) => line !== '' && !line.startsWith('//')); // Ignore comments and empty lines
 
-    // Parsing existing shapes in the file
     lines.forEach((line, index) => {
       try {
-        // Remove inline comments and anything after the semicolon
         const cleanLine = line.split('//')[0].split(';')[0].trim();
-
-        // Split the line into parts
         const parts = cleanLine.split(',').map((item) => item.trim());
 
         if (parts[0].includes('[object File]')) {
@@ -25,7 +20,6 @@ export const parseShapeFile = (fileContent, newShape = null) => {
         let shape = null;
 
         if (type === 'Circle') {
-          // Validate and extract Circle-specific fields
           const [x, y, zIndex, radius, color] = parts.slice(1);
           if (isNaN(x) || isNaN(y) || isNaN(zIndex) || isNaN(radius) || !color) {
             console.warn(`Invalid Circle data (line ${index + 1}): ${line}`);
@@ -40,25 +34,24 @@ export const parseShapeFile = (fileContent, newShape = null) => {
             };
           }
         } else if (type === 'Polygon') {
-          // Validate and extract Polygon-specific fields
-          const [x, y, zIndex, width, height, rotation, vertexCount, color] = parts.slice(1);
-          if (isNaN(x) || isNaN(y) || isNaN(zIndex) || isNaN(width) || isNaN(height) || isNaN(rotation) || isNaN(vertexCount) || !color) {
+          const [x, y, zIndex, width, height, vertexCount, color] = parts.slice(1);
+          if (isNaN(x) || isNaN(y) || isNaN(zIndex) || isNaN(width) || isNaN(height) || isNaN(vertexCount) || !color) {
             console.warn(`Invalid Polygon data (line ${index + 1}): ${line}`);
           } else {
             shape = {
               type,
-              x: +x,
-              y: +y,
+              x: +x,  // Ensure x is correctly parsed
+              y: +y,  // Ensure y is correctly parsed
               zIndex: +zIndex,
               width: +width,
               height: +height,
-              rotation: +rotation,
               vertexCount: +vertexCount,
               color: color.startsWith('#') ? color : `#${color}`,
+              vertices: generatePolygonVertices(+width, +height, +vertexCount), // Generate the vertices
             };
           }
-        } else {
-          // Validate and extract general shape fields
+        }
+         else {
           const [x, y, zIndex, width, height, color] = parts.slice(1);
           if (isNaN(x) || isNaN(y) || isNaN(zIndex) || isNaN(width) || isNaN(height) || !color) {
             console.warn(`Invalid shape data (line ${index + 1}): ${line}`);
@@ -75,7 +68,6 @@ export const parseShapeFile = (fileContent, newShape = null) => {
           }
         }
 
-        // Add valid shape to the list
         if (shape) {
           shapes.push(shape);
         }
@@ -86,9 +78,7 @@ export const parseShapeFile = (fileContent, newShape = null) => {
     });
   }
 
-  // Append new shape data if provided
   if (newShape) {
-    // Check if the newShape already exists
     const shapeExists = shapes.some(
       (shape) =>
         shape.type === newShape.type &&
@@ -100,9 +90,24 @@ export const parseShapeFile = (fileContent, newShape = null) => {
     );
 
     if (!shapeExists) {
-      shapes.push(newShape); // Append the new shape if not a duplicate
+      shapes.push(newShape);
     }
   }
 
   return shapes;
+};
+
+// Function to generate vertices for polygon based on width, height, and number of sides
+const generatePolygonVertices = (width, height, vertexCount) => {
+  const vertices = [];
+  const angleStep = (2 * Math.PI) / vertexCount;
+
+  for (let i = 0; i < vertexCount; i++) {
+    const angle = i * angleStep;
+    const x = width / 2 * Math.cos(angle); // Scale based on width
+    const y = height / 2 * Math.sin(angle); // Scale based on height
+    vertices.push({ x, y });
+  }
+
+  return vertices;
 };

@@ -1,22 +1,22 @@
 export const drawShapes = (shapes, canvasRef) => {
   const canvas = canvasRef.current;
 
-  if (!canvas) return; // Ensure the canvas element exists
+  if (!canvas) return;
 
   const ctx = canvas.getContext("2d");
 
   // Clear the entire canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Sort shapes by zIndex (ascending order)
-  const sortedShapes = [...shapes].sort((a, b) => a.zIndex - b.zIndex); // Sort shapes based on zIndex
+  // Sort shapes by zIndex
+  const sortedShapes = [...shapes].sort((a, b) => a.zIndex - b.zIndex);
 
   sortedShapes.forEach(
-    ({ type, x, y, width, height, color, radius, rotation, vertexCount, vertices }) => {
-      ctx.fillStyle = color; // Set the fill color for the shape
+    ({ type, x, y, width, height, color, radius, vertexCount, vertices }) => {
+      ctx.fillStyle = color;
 
       if (type === "Rectangle" && width && height) {
-        ctx.fillRect(x, y, width, height); // Draw a rectangle
+        ctx.fillRect(x, y, width, height); // Draw rectangle
       } else if (type === "Triangle" && width && height) {
         ctx.beginPath();
         ctx.moveTo(x, y); // Starting point
@@ -25,34 +25,28 @@ export const drawShapes = (shapes, canvasRef) => {
         ctx.closePath();
         ctx.fill(); // Fill the triangle
       } else if (type === "Circle" && radius) {
-        ctx.beginPath(); // Start a new path
-        ctx.arc(x, y, radius, 0, 2 * Math.PI); // Draw a circle
-        ctx.closePath(); // Close the path
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, 2 * Math.PI); // Draw circle
+        ctx.closePath();
         ctx.fill(); // Fill the circle
       } else if (type === "Polygon" && vertices && vertexCount >= 3) {
-        ctx.save(); // Save the current state
-        ctx.translate(x + width / 2, y + height / 2); // Move to the center of the polygon
-        ctx.rotate((rotation * Math.PI) / 180); // Rotate the context
-
+        ctx.save();
+        // Center the polygon by translating the canvas context
+        ctx.translate(x, y); // Center at (x, y)
         ctx.beginPath();
 
-        // Drawing the polygon by scaling its vertices
-        for (let i = 0; i < vertices.length; i++) {
-          const vertex = vertices[i];
-          const angle = (i * 2 * Math.PI) / vertexCount;
-          const px = (vertex.x * width) / 2; // Scale based on width
-          const py = (vertex.y * height) / 2; // Scale based on height
-
+        // Draw the polygon by connecting the vertices
+        vertices.forEach((vertex, i) => {
           if (i === 0) {
-            ctx.moveTo(px, py);
+            ctx.moveTo(vertex.x, vertex.y); // Start point
           } else {
-            ctx.lineTo(px, py);
+            ctx.lineTo(vertex.x, vertex.y); // Draw each line
           }
-        }
+        });
 
         ctx.closePath();
         ctx.fill(); // Fill the polygon
-        ctx.restore(); // Restore the previous state
+        ctx.restore(); // Restore the previous canvas state
       }
     }
   );
