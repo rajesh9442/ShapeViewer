@@ -28,10 +28,6 @@ const TopToolbar = ({ fileName, onSaveFile, isFileModified, shapes }) => {
     transition: "background-color 0.3s ease", // Smooth transition for hover effect
   };
 
-  const buttonHoverStyle = {
-    backgroundColor: "#218838", // Darker green for hover effect
-  };
-
   // Function to format shapes into the desired text format
   const formatShapesForDownload = (shapes) => {
     if (!shapes || !Array.isArray(shapes)) return ""; // Ensure shapes is a valid array
