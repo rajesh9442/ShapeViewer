@@ -11,7 +11,6 @@ Features:
 
     File format example:
 
-    // my-shape-file.shapefile
     Rectangle, 0, 0, 2, 50, 50, ff0000, 73; // type, x-axis, y-axis, z-index, width, height, color, rotation angle(optional)
     Circle, 500, 100, 3, 150, 0000ff;  // type, x-axis, y-axis, z-index, radius, color, rotation angle(optional)
     Triangle, 3, 30, 7, 50, 30, 0000ff; // type, x-axis, y-axis, z-index, width, height, color, rotation angle(optional)
