@@ -138,14 +138,14 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
   const handleSaveShape = () => {
     // Get the color code based on selected color
     const colorCode = colorCodeMap[inputValues.Color] || inputValues.Color;
-
+    
     // Construct the new shape based on selected shape type
     let newShape = {
       type: selectedShape,
       color: colorCode,
       zIndex: parseInt(inputValues.z || 0),
     };
-
+  
     // Set the properties based on the shape type
     if (selectedShape === "Circle") {
       newShape = {
@@ -153,7 +153,7 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
         x: parseInt(inputValues.x || 0),
         y: parseInt(inputValues.y || 0),
         radius: parseInt(inputValues.Radius || 0), // Only radius for Circle
-        rotation: parseFloat(inputValues.Rotation) || 0, // Apply rotation
+        rotation: -parseFloat(inputValues.Rotation) || 0, // Apply counterclockwise rotation
       };
     } else if (selectedShape === "Polygon") {
       newShape = {
@@ -164,7 +164,7 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
         width: parseInt(inputValues.Width || 50), // Width for Polygon
         height: parseInt(inputValues.Height || 50), // Height for Polygon
         vertices: generatePolygonVertices(inputValues), // Generate the vertices for the polygon
-        rotation: parseFloat(inputValues.Rotation) || 0, // Apply rotation
+        rotation: -parseFloat(inputValues.Rotation) || 0, // Apply counterclockwise rotation
       };
     } else if (selectedShape === "Rectangle" || selectedShape === "Triangle") {
       newShape = {
@@ -173,19 +173,19 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
         y: parseInt(inputValues.y || 0),
         width: parseInt(inputValues.Width || 50),
         height: parseInt(inputValues.Height || 50),
-        rotation: parseFloat(inputValues.Rotation) || 0, // Apply rotation
+        rotation: -parseFloat(inputValues.Rotation) || 0, // Apply counterclockwise rotation
       };
     }
-
+  
     // Call the parent component to update the shapes
     onCreateNewShape(newShape);
-
+  
     // Close the modal and reset states
     setIsModalOpen(false);
     setSelectedShape(""); // Clear selected shape after saving
     setShapeInputs([]); // Clear shape inputs
     setInputValues({}); // Reset input values
-  };
+  };  
 
   // Function to generate vertices for polygon based on width, height, and number of sides
   const generatePolygonVertices = (inputValues) => {

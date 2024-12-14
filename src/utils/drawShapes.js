@@ -26,44 +26,43 @@ export const drawShapes = (shapes, canvasRef) => {
     }) => {
       ctx.fillStyle = color;
 
-      // Rotation handling
+      // Rotation handling (convert degrees to radians)
       const angleInRadians = (rotation || 0) * (Math.PI / 180); // Convert degrees to radians
 
       if (type === "Rectangle" && width && height) {
-        // Set rotation transformation at the center of the rectangle
-        ctx.save(); // Save current context state
-        ctx.translate(x + width / 2, y + height / 2); // Move the origin to the center
-        ctx.rotate(angleInRadians); // Apply the rotation
+        // Apply counterclockwise rotation for Rectangle
+        ctx.save();
+        ctx.translate(x + width / 2, y + height / 2); // Move the origin to the center of the rectangle
+        ctx.rotate(-angleInRadians); // Apply counterclockwise rotation
         ctx.fillRect(-width / 2, -height / 2, width, height); // Draw the rectangle centered at the origin
-        ctx.restore(); // Restore context state
+        ctx.restore();
       } else if (type === "Triangle" && width && height) {
-        // Set rotation transformation at the center of the triangle
-        ctx.save(); // Save current context state
-        ctx.translate(x + width / 2, y + height / 2); // Move the origin to the center
-        ctx.rotate(angleInRadians); // Apply the rotation
+        // Apply counterclockwise rotation for Triangle
+        ctx.save();
+        ctx.translate(x + width / 2, y + height / 2); // Move the origin to the center of the triangle
+        ctx.rotate(-angleInRadians); // Apply counterclockwise rotation
         ctx.beginPath();
         ctx.moveTo(-width / 2, height / 2); // Bottom-left point
         ctx.lineTo(width / 2, height / 2); // Bottom-right point
         ctx.lineTo(0, -height); // Top point
         ctx.closePath();
-        ctx.fill(); // Fill the triangle
-        ctx.restore(); // Restore context state
+        ctx.fill();
+        ctx.restore();
       } else if (type === "Circle" && radius) {
-        // Set rotation transformation at the center of the circle
-        ctx.save(); // Save current context state
+        // Apply counterclockwise rotation for Circle
+        ctx.save();
         ctx.translate(x, y); // Move the origin to the center of the circle
-        ctx.rotate(angleInRadians); // Apply the rotation
+        ctx.rotate(-angleInRadians); // Apply counterclockwise rotation
         ctx.beginPath();
         ctx.arc(0, 0, radius, 0, 2 * Math.PI); // Draw the circle centered at the origin
         ctx.closePath();
-        ctx.fill(); // Fill the circle
-        ctx.restore(); // Restore context state
+        ctx.fill();
+        ctx.restore();
       } else if (type === "Polygon" && vertices && vertexCount >= 3) {
-        // Set rotation transformation at the center of the polygon
-        ctx.save(); // Save current context state
+        // Apply counterclockwise rotation for Polygon
+        ctx.save();
         ctx.translate(x, y); // Move the origin to the center of the polygon
-        ctx.rotate(angleInRadians); // Apply the rotation
-
+        ctx.rotate(-angleInRadians); // Apply counterclockwise rotation
         ctx.beginPath();
         // Draw the polygon by connecting the vertices
         vertices.forEach((vertex, i) => {
@@ -76,10 +75,9 @@ export const drawShapes = (shapes, canvasRef) => {
             ctx.lineTo(vertexX, vertexY); // Draw each line
           }
         });
-
         ctx.closePath();
-        ctx.fill(); // Fill the polygon
-        ctx.restore(); // Restore context state
+        ctx.fill();
+        ctx.restore();
       }
     }
   );
