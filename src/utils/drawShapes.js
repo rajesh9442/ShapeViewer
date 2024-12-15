@@ -1,3 +1,5 @@
+// src/utils/drawShapes.js
+
 export const drawShapes = (shapes, canvasRef) => {
   const canvas = canvasRef.current;
 
@@ -8,11 +10,8 @@ export const drawShapes = (shapes, canvasRef) => {
   // Clear the entire canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // If 'shapes' is not an array, try converting it to an array
-  const shapeArray = Array.isArray(shapes) ? shapes : Array.from(shapes);
-
-  // Shapes are already sorted by zIndex, no need to sort here again
-  const sortedShapes = shapeArray;  // Since shapes are inserted in sorted order
+  // Sort shapes by zIndex
+  const sortedShapes = shapes.sort((a, b) => a.zIndex - b.zIndex);
 
   sortedShapes.forEach(
     ({
@@ -25,24 +24,21 @@ export const drawShapes = (shapes, canvasRef) => {
       radius,
       vertexCount,
       vertices,
-      rotation,
+      rotation = 0, // Default rotation to 0 if not provided
     }) => {
       ctx.fillStyle = color;
 
-      // Rotation handling (convert degrees to radians)
       const angleInRadians = (rotation || 0) * (Math.PI / 180); // Convert degrees to radians
 
       if (type === "Rectangle" && width && height) {
-        // Apply counterclockwise rotation for Rectangle
         ctx.save();
-        ctx.translate(x + width / 2, y + height / 2); // Move the origin to the center of the rectangle
+        ctx.translate(x + width / 2, y + height / 2); // Move the origin to the center
         ctx.rotate(-angleInRadians); // Apply counterclockwise rotation
         ctx.fillRect(-width / 2, -height / 2, width, height); // Draw the rectangle centered at the origin
         ctx.restore();
       } else if (type === "Triangle" && width && height) {
-        // Apply counterclockwise rotation for Triangle
         ctx.save();
-        ctx.translate(x + width / 2, y + height / 2); // Move the origin to the center of the triangle
+        ctx.translate(x + width / 2, y + height / 2); // Move the origin to the center
         ctx.rotate(-angleInRadians); // Apply counterclockwise rotation
         ctx.beginPath();
         ctx.moveTo(-width / 2, height / 2); // Bottom-left point
@@ -52,7 +48,6 @@ export const drawShapes = (shapes, canvasRef) => {
         ctx.fill();
         ctx.restore();
       } else if (type === "Circle" && radius) {
-        // Apply counterclockwise rotation for Circle
         ctx.save();
         ctx.translate(x, y); // Move the origin to the center of the circle
         ctx.rotate(-angleInRadians); // Apply counterclockwise rotation
@@ -62,12 +57,10 @@ export const drawShapes = (shapes, canvasRef) => {
         ctx.fill();
         ctx.restore();
       } else if (type === "Polygon" && vertices && vertexCount >= 3) {
-        // Apply counterclockwise rotation for Polygon
         ctx.save();
         ctx.translate(x, y); // Move the origin to the center of the polygon
         ctx.rotate(-angleInRadians); // Apply counterclockwise rotation
         ctx.beginPath();
-        // Draw the polygon by connecting the vertices
         vertices.forEach((vertex, i) => {
           const vertexX = vertex.x;
           const vertexY = vertex.y;

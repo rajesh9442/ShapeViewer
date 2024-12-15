@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import LeftMenu from "./components/LeftMenu";
 import ShapeViewport from "./components/ShapeViewport";
 import TopToolbar from "./components/TopToolbar";
-import { parseShapeFile } from "./utils/parseShapeFile"; 
+import { parseShapeFile } from "./utils/parseShapeFile";
+import { ShapeList } from "./utils/shapeLinkedList"; // Import ShapeList
 import "./App.css";
 
 const App = () => {
-  const [shapes, setShapes] = useState([]); // Stores parsed and added shapes
+  const [shapes, setShapes] = useState(new ShapeList()); // Use ShapeList for shapes
   const [fileContent, setFileContent] = useState(""); // Stores file content in memory
   const [fileName, setFileName] = useState(null); // Stores the uploaded file name
   const [isFileModified, setIsFileModified] = useState(false); // Track if the file has been modified
@@ -26,7 +27,12 @@ const App = () => {
       const fileContent = e.target.result;
       const parsedShapes = parseShapeFile(fileContent); // Parse shapes
 
-      setShapes(parsedShapes); // Directly set parsed shapes
+      const newShapes = new ShapeList();
+      parsedShapes.forEach((shape) => {
+        newShapes.insert(shape);
+      });
+
+      setShapes(newShapes); // Set the new linked list of shapes
       setFileContent(fileContent); // Save the file content in memory
       setFileName(file.name); // Set file name
       setIsFileModified(false); // Reset the modified flag after opening a file
@@ -37,35 +43,36 @@ const App = () => {
   // Function to handle adding a new shape to the existing shapes list
   const handleCreateNewShape = (newShape) => {
     setShapes((prevShapes) => {
-      // Insert new shape while maintaining sorted order based on zIndex
-      const updatedShapes = [...prevShapes, newShape];
-
-      // Sort the shapes based on zIndex only when adding new shapes
-      updatedShapes.sort((a, b) => a.zIndex - b.zIndex);
-
-      setIsFileModified(true); // Mark the file as modified when a new shape is added
-      return updatedShapes; // Return sorted shapes
+      // Create a new linked list and insert the new shape
+      const newShapes = new ShapeList();
+      const arrayShapes = prevShapes.toArray(); // Convert the old shapes to an array
+      arrayShapes.forEach((shape) => newShapes.insert(shape)); // Reinsert old shapes
+      newShapes.insert(newShape); // Insert the new shape
+      setIsFileModified(true); // Mark the file as modified
+      return newShapes; // Return the updated linked list
     });
   };
 
   // Function to update the shape after dragging
   const handleShapeUpdate = (updatedShape) => {
     setShapes((prevShapes) => {
-      const updatedShapes = prevShapes.map((shape) =>
-        shape.type === updatedShape.type && shape.zIndex === updatedShape.zIndex
-          ? updatedShape
-          : shape
-      );
-
+      const newShapes = new ShapeList();
+      const arrayShapes = prevShapes.toArray();
+      arrayShapes.forEach((shape) => {
+        if (shape.zIndex === updatedShape.zIndex) {
+          newShapes.insert(updatedShape); // Update the shape
+        } else {
+          newShapes.insert(shape); // Keep the other shapes unchanged
+        }
+      });
       setIsFileModified(true); // Mark as modified after drag
-      return updatedShapes;
+      return newShapes;
     });
   };
 
   // Function to save the updated file (in-memory)
   const handleSaveFile = () => {
-    // Generate updated content from the shapes
-    let updatedContent = shapes
+    const updatedContent = shapes.toArray()
       .map((shape) => {
         let shapeStr = `${shape.type}, ${shape.x}, ${shape.y}, ${shape.zIndex}, `;
         if (shape.type === "Rectangle" || shape.type === "Triangle") {
@@ -79,12 +86,9 @@ const App = () => {
       })
       .join("\n");
 
-    // Update the in-memory content
-    setFileContent(updatedContent);
-
-    // Notify user that the changes have been saved (or trigger a download)
-    alert("Changes have been saved to the file.");
-    setIsFileModified(false); // Reset modified flag after saving
+    setFileContent(updatedContent); // Save the content to memory
+    alert("Changes have been saved to the file."); // Notify user
+    setIsFileModified(false); // Reset the modified flag
   };
 
   return (
@@ -93,11 +97,11 @@ const App = () => {
         fileName={fileName}
         onSaveFile={handleSaveFile}
         isFileModified={isFileModified}
-        shapes={shapes}
+        shapes={shapes.toArray()} // Pass shapes as array for rendering
       />
       <div className="main-content">
         <LeftMenu onFileOpen={handleFileOpen} onCreateNewShape={handleCreateNewShape} />
-        <ShapeViewport shapes={shapes} onShapeUpdate={handleShapeUpdate} />
+        <ShapeViewport shapes={shapes.toArray()} onShapeUpdate={handleShapeUpdate} />
       </div>
     </div>
   );

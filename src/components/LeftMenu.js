@@ -43,6 +43,24 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
     borderRadius: "4px",
   });
 
+  // Generate vertices for polygon based on width, height, and number of sides
+  const generatePolygonVertices = (inputValues) => {
+    const numberOfSides = parseInt(inputValues["Number of sides"] || 3);
+    const width = parseInt(inputValues.Width || 50); // Default width for polygon
+    const height = parseInt(inputValues.Height || 50); // Default height for polygon
+    const vertices = [];
+    const angleStep = (2 * Math.PI) / numberOfSides;
+
+    for (let i = 0; i < numberOfSides; i++) {
+      const angle = i * angleStep;
+      const x = (width / 2) * Math.cos(angle); // Scale based on width
+      const y = (height / 2) * Math.sin(angle); // Scale based on height
+      vertices.push({ x, y });
+    }
+
+    return vertices;
+  };
+
   // File handling
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
@@ -187,24 +205,6 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
     setInputValues({}); // Reset input values
   };  
 
-  // Function to generate vertices for polygon based on width, height, and number of sides
-  const generatePolygonVertices = (inputValues) => {
-    const numberOfSides = parseInt(inputValues["Number of sides"] || 3);
-    const width = parseInt(inputValues.Width || 50); // Default width for polygon
-    const height = parseInt(inputValues.Height || 50); // Default height for polygon
-    const vertices = [];
-    const angleStep = (2 * Math.PI) / numberOfSides;
-
-    for (let i = 0; i < numberOfSides; i++) {
-      const angle = i * angleStep;
-      const x = (width / 2) * Math.cos(angle); // Scale based on width
-      const y = (height / 2) * Math.sin(angle); // Scale based on height
-      vertices.push({ x, y });
-    }
-
-    return vertices;
-  };
-
   return (
     <div style={menuStyle}>
       {/* Upload Button */}
@@ -265,7 +265,7 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
       </div>
 
       {/* List of Uploaded Files */}
-      <div>
+      <div className="file-list">
         {uploadedFiles.map((file, index) => (
           <div
             key={index}
@@ -390,7 +390,7 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
                   marginTop: "10px",
                 }}
               >
-                Save Shape
+                Save
               </button>
             )}
           </div>
