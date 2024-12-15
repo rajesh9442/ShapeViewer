@@ -8,8 +8,11 @@ export const drawShapes = (shapes, canvasRef) => {
   // Clear the entire canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Sort shapes by zIndex
-  const sortedShapes = [...shapes].sort((a, b) => a.zIndex - b.zIndex);
+  // If 'shapes' is not an array, try converting it to an array
+  const shapeArray = Array.isArray(shapes) ? shapes : Array.from(shapes);
+
+  // Shapes are already sorted by zIndex, no need to sort here again
+  const sortedShapes = shapeArray;  // Since shapes are inserted in sorted order
 
   sortedShapes.forEach(
     ({

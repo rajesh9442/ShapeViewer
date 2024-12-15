@@ -37,9 +37,14 @@ const App = () => {
   // Function to handle adding a new shape to the existing shapes list
   const handleCreateNewShape = (newShape) => {
     setShapes((prevShapes) => {
+      // Insert new shape while maintaining sorted order based on zIndex
       const updatedShapes = [...prevShapes, newShape];
+
+      // Sort the shapes based on zIndex only when adding new shapes
+      updatedShapes.sort((a, b) => a.zIndex - b.zIndex);
+
       setIsFileModified(true); // Mark the file as modified when a new shape is added
-      return updatedShapes; // No scaling, just add the new shape
+      return updatedShapes; // Return sorted shapes
     });
   };
 
@@ -51,6 +56,7 @@ const App = () => {
           ? updatedShape
           : shape
       );
+
       setIsFileModified(true); // Mark as modified after drag
       return updatedShapes;
     });
