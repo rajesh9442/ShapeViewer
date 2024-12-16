@@ -1,8 +1,8 @@
 # SHAPE VIEWER
 
 #### 1) Open the Project:
-        • After cloning or extracting the project, open the application folder in VS Code or your preferred code editor.
-        • GitHub link : https://github.com/rajesh9442/ShapeViewer
+        > • After cloning or extracting the project, open the application folder in VS Code or your preferred code editor.
+          [GitHub code](https://github.com/rajesh9442/ShapeViewer)
 
 #### 2) Install Dependencies:
         • Run the following command in the terminal to install the required Node modules:
