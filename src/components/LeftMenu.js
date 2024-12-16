@@ -203,6 +203,7 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
     setSelectedShape(""); // Clear selected shape after saving
     setShapeInputs([]); // Clear shape inputs
     setInputValues({}); // Reset input values
+    setIsSaveEnabled(false); // Reset save button to disabled
   };  
 
   return (
@@ -335,9 +336,7 @@ const LeftMenu = ({ onFileOpen, onCreateNewShape }) => {
                 <form>
                   {shapeInputs.map((input, index) => (
                     <div key={index} style={{ marginBottom: "10px" }}>
-                      <label
-                        style={{ marginRight: "10px", fontWeight: "bold" }}
-                      >
+                      <label style={{ marginRight: "10px", fontWeight: "bold" }}>
                         {input}:
                       </label>
                       {input === "Color" ? (

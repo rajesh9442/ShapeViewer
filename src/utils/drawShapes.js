@@ -1,5 +1,3 @@
-// src/utils/drawShapes.js
-
 export const drawShapes = (shapes, canvasRef) => {
   const canvas = canvasRef.current;
 
