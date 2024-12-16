@@ -27,7 +27,7 @@ const TopToolbar = ({ fileName, onSaveFile, isFileModified, shapes, onFileOpen }
     opacity: isFileModified ? 1 : 0.5, // Make the button less prominent if disabled
     transition: "background-color 0.3s ease", // Smooth transition for hover effect
     marginRight: "10px", // Add space between the buttons
-    width: "130px", // Same size for both buttons
+    width: "200px", // Same size for both buttons
   };
 
   const openFileButtonStyle = {
