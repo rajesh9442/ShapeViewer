@@ -1,6 +1,6 @@
 import React from "react";
 
-const TopToolbar = ({ fileName, onSaveFile, isFileModified, shapes }) => {
+const TopToolbar = ({ fileName, onSaveFile, isFileModified, shapes, onFileOpen }) => {
   const toolbarStyle = {
     display: "flex",
     justifyContent: "space-between",
@@ -17,7 +17,7 @@ const TopToolbar = ({ fileName, onSaveFile, isFileModified, shapes }) => {
     marginRight: "20px", // Add margin to the right for space between file name and button
   };
 
-  const saveButtonStyle = {
+  const buttonStyle = {
     padding: "5px 10px",
     backgroundColor: "#28a745",
     color: "#fff",
@@ -26,6 +26,15 @@ const TopToolbar = ({ fileName, onSaveFile, isFileModified, shapes }) => {
     cursor: isFileModified ? "pointer" : "not-allowed", // Disable if no changes
     opacity: isFileModified ? 1 : 0.5, // Make the button less prominent if disabled
     transition: "background-color 0.3s ease", // Smooth transition for hover effect
+    marginRight: "10px", // Add space between the buttons
+    width: "130px", // Same size for both buttons
+  };
+
+  const openFileButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: "#007bff", // Blue color for "Open Shape File"
+    cursor: "pointer", // Make sure the cursor shows as pointer
+    opacity: 1, // Ensure the button is always enabled
   };
 
   // Function to format shapes into the desired text format
@@ -94,10 +103,20 @@ const TopToolbar = ({ fileName, onSaveFile, isFileModified, shapes }) => {
     <div style={toolbarStyle}>
       <span>Shape Viewer</span>
       <div style={{ display: "flex", alignItems: "center" }}>
-        {fileName && <span style={fileNameStyle}>{fileName}</span>}
+        {/* Conditionally display the Open Shape File button if no file is selected */}
+        {!fileName ? (
+          <button
+            onClick={() => document.getElementById("file-input").click()}
+            style={openFileButtonStyle}
+          >
+            Open Shape File
+          </button>
+        ) : (
+          <span style={fileNameStyle}>{fileName}</span>
+        )}
         <button
           onClick={handleDownload} // Call handleDownload when clicked
-          style={saveButtonStyle}
+          style={buttonStyle}
           disabled={!isFileModified || !fileName} // Disable if no changes were made or no file is uploaded
           onMouseEnter={(e) => (e.target.style.backgroundColor = "#218838")} // Darker green on hover
           onMouseLeave={(e) => (e.target.style.backgroundColor = "#28a745")} // Reset to original green color

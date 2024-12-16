@@ -98,6 +98,7 @@ const App = () => {
         onSaveFile={handleSaveFile}
         isFileModified={isFileModified}
         shapes={shapes.toArray()} // Pass shapes as array for rendering
+        onFileOpen={handleFileOpen} // Pass handleFileOpen to TopToolbar
       />
       <div className="main-content">
         <LeftMenu onFileOpen={handleFileOpen} onCreateNewShape={handleCreateNewShape} />
