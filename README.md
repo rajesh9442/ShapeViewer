@@ -1,25 +1,25 @@
-**SHAPE VIEWER**
+# SHAPE VIEWER
 
-# 1) Open the Project:
+#### 1) Open the Project:
         • After cloning or extracting the project, open the application folder in VS Code or your preferred code editor.
         • GitHub link : https://github.com/rajesh9442/ShapeViewer
 
-# 2) Install Dependencies:
+#### 2) Install Dependencies:
         • Run the following command in the terminal to install the required Node modules:
                     npm install
 
-# 3) Start the Application:
+#### 3) Start the Application:
         • Launch the application using:
                     npm start
         • The application will start running in your default web browser.
 
-**Alternatively:**
+### Alternatively:
         • You can directly view the hosted version of the application by clicking this link:
             [ShapeViewer](https://shape-viewer-seven.vercel.app/)
 
             
-**Application Features**
-# 1) Upload Shape File
+## Application Features
+#### 1) Upload Shape File
         • Click the "Open Shape File" button to upload your file.
         • Supported File Extensions: .txt, .shapefile
         • File Format Example:
@@ -35,45 +35,45 @@
         # Multiple File Uploads:
         • You can upload multiple files by clicking the "Open Shape File" button again.
 
-# 2) Create New Shape
+#### 2) Create New Shape
         • After uploading a file, click the "Create New Shape" button to add new shapes.
         # Shape Options:
         • Select the desired shape type: Rectangle, Circle, Triangle, or Polygon.
         • Fill in the required input fields based on the shape type.
 
-# 3) Save Changes
+#### 3) Save Changes
         • After creating new shapes, click the "Save Changes" button in the top toolbar.
         • Note: The new shapes will be added to the current file and saved as new file.
 
 
-**Additional Information**
-# 1) Iterations Completed
+## Additional Information
+#### 1) Iterations Completed
         • Iteration 1 : User Interface Layout
         • Iteration 2 : Shape File
         • Iteration 3 : Shape Rendering
         • Iteration 4 : Polygon Support
         • Iteration 5 : UI Enhancement
 
-# 2) Bonus Features Completed
+#### 2) Bonus Features Completed
         • Bonus Feature 2 : Shape Creation
         • Bonus Feature 3 : Shape Rotation
 
-# 3) Extra Features Completed
+#### 3) Extra Features Completed
        ** • Multiple File uploads :** Users can upload multiple shape files and seamlessly view or manage shapes from all uploaded files.
         **• Auto Adjust Screen Size for Bigger Values :** The application automatically adjusts the viewport and rendering canvas size to accommodate shapes with larger coordinate values, ensuring all shapes fit within the viewable area.
 
 
 
-**Performance Optimization**
+## Performance Optimization
         To enhance the efficiency of handling and rendering shapes, the LinkedList data structure has been utilized. This approach provides the following benefits:
 
-# 1) Efficient Insertion by Z-Index:
+#### 1) Efficient Insertion by Z-Index:
         • New shapes are inserted into the data structure based on their z-index. This ensures that the list remains sorted for rendering, eliminating the need for additional sorting operations during rendering.
 
-# 2) Optimized Rendering for Large Datasets:
+#### 2) Optimized Rendering for Large Datasets:
         • By maintaining a sorted structure, rendering operations become faster and more efficient, allowing the application to handle and display thousands of shapes seamlessly.
 
-# 3) Scalability:
+#### 3) Scalability:
         • This optimization makes the application capable of efficiently managing and rendering many shapes, ensuring smooth performance even with extensive datasets.
 
 
