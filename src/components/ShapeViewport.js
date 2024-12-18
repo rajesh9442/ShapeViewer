@@ -5,15 +5,36 @@ import { drawShapes } from "../utils/drawShapes";
 const resizeCanvas = (canvasRef, shapes) => {
   const canvas = canvasRef.current;
   if (canvas) {
-    // Calculate the canvas size based on all shapes' positions and sizes
-    const canvasWidth = Math.max(
-      window.innerWidth,
-      Math.max(...shapes.map((shape) => shape.x + (shape.width || 0)))
-    );
-    const canvasHeight = Math.max(
-      window.innerHeight,
-      Math.max(...shapes.map((shape) => shape.y + (shape.height || 0)))
-    );
+    // Get the maximum width and height from the shapes
+    const maxX = Math.max(...shapes.map((shape) => {
+      if (shape.type === "Circle") {
+        return shape.x + shape.radius; // For Circle, use x + radius
+      } else {
+        return shape.x + (shape.width || 0); // For other shapes, use x + width
+      }
+    }));
+
+    const maxY = Math.max(...shapes.map((shape) => {
+      if (shape.type === "Circle") {
+        return shape.y + shape.radius; // For Circle, use y + radius
+      } else {
+        return shape.y + (shape.height || 0); // For other shapes, use y + height
+      }
+    }));
+
+    // Calculate the aspect ratio based on the canvas size we want (for example, 16:9 aspect ratio)
+    const aspectRatio = 16 / 9;
+
+    // Adjust the canvas width and height to maintain the aspect ratio
+    let canvasWidth = Math.max(window.innerWidth, maxX);
+    let canvasHeight = Math.max(window.innerHeight, maxY);
+
+    // If width is much larger than the height, adjust height based on the aspect ratio
+    if (canvasWidth / canvasHeight > aspectRatio) {
+      canvasHeight = canvasWidth / aspectRatio; // Adjust height to maintain aspect ratio
+    } else {
+      canvasWidth = canvasHeight * aspectRatio; // Adjust width to maintain aspect ratio
+    }
 
     // Set the canvas width and height to fit all shapes
     canvas.width = canvasWidth;
